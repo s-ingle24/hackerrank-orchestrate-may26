@@ -4,18 +4,18 @@ import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# ---------------------------
+
 # PATHS
-# ---------------------------
+
 TICKETS_PATH = "E:/Hacker Rank/support_tickets/support_tickets.csv"
 OUTPUT_PATH = "E:/Hacker Rank/support_tickets/output.csv"
 DATA_DIR = "E:/Hacker Rank/data"
 
 os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
 
-# ---------------------------
+
 # LOAD DOCUMENTS
-# ---------------------------
+
 def load_documents():
     docs = []
     for root, _, files in os.walk(DATA_DIR):
@@ -26,20 +26,20 @@ def load_documents():
                         docs.append(f.read())
                 except:
                     pass
-    print("✅ Documents loaded:", len(docs))
+    print("Documents loaded:", len(docs))
     return docs
 
 DOCUMENTS = load_documents()
 
-# ---------------------------
+
 # CLEAN TEXT
-# ---------------------------
+
 def clean(text):
     return re.sub(r'[^a-z0-9 ]', ' ', str(text).lower())
 
-# ---------------------------
+
 # TF-IDF MODEL
-# ---------------------------
+
 vectorizer = TfidfVectorizer(stop_words="english")
 
 if DOCUMENTS:
@@ -47,9 +47,9 @@ if DOCUMENTS:
 else:
     DOC_VECTORS = None
 
-# ---------------------------
+
 # RETRIEVAL (SMART)
-# ---------------------------
+
 def retrieve_docs(ticket, top_k=2):
     if DOC_VECTORS is None:
         return []
@@ -66,9 +66,9 @@ def retrieve_docs(ticket, top_k=2):
 
     return results
 
-# ---------------------------
+
 # CLASSIFICATION
-# ---------------------------
+
 def classify(ticket):
     t = ticket.lower()
 
@@ -81,9 +81,9 @@ def classify(ticket):
     else:
         return "product_issue"
 
-# ---------------------------
+
 # PRODUCT AREA DETECTION
-# ---------------------------
+
 def detect_area(ticket):
     t = ticket.lower()
 
@@ -102,9 +102,9 @@ def detect_area(ticket):
     else:
         return "general"
 
-# ---------------------------
+
 # RISK DETECTION
-# ---------------------------
+
 def is_high_risk(ticket):
     t = ticket.lower()
 
@@ -117,9 +117,9 @@ def is_high_risk(ticket):
 
     return False
 
-# ---------------------------
+
 # SMART RESPONSE GENERATION
-# ---------------------------
+
 def generate_response(ticket, docs, status, area):
     if status == "escalated":
         return "Your issue has been escalated to our support team for further investigation."
@@ -145,9 +145,9 @@ def generate_response(ticket, docs, status, area):
     else:
         return "Please follow the help documentation or contact support for assistance."
 
-# ---------------------------
+
 # JUSTIFICATION
-# ---------------------------
+
 def get_justification(status, risk, docs):
     if status == "escalated":
         if risk:
@@ -159,9 +159,9 @@ def get_justification(status, risk, docs):
 
     return "Response generated using heuristic rules."
 
-# ---------------------------
+
 # MAIN
-# ---------------------------
+
 def process_tickets():
     df = pd.read_csv(TICKETS_PATH)
     print("Columns:", df.columns)
@@ -194,10 +194,9 @@ def process_tickets():
         })
 
     pd.DataFrame(results).to_csv(OUTPUT_PATH, index=False)
-    print("🔥 Offline AI output generated!")
+    print("Offline AI output generated!")
 
-# ---------------------------
-# RUN
-# ---------------------------
+
+
 if __name__ == "__main__":
     process_tickets()
